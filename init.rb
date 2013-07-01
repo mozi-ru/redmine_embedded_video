@@ -1,5 +1,6 @@
 require 'redmine'
 #require 'dispatcher'
+require "#{Rails.root}/plugins/redmine_embedded_video/app/helpers/redmine_embedded_video_helper"
 
 Redmine::Plugin.register :redmine_embedded_video do
  name 'Redmine Embedded Video'
@@ -39,5 +40,32 @@ out = <<END
 END
 
     out.html_safe
+  end
+
+  RedmineEmbeddedVideoHelper.load_config.each do |key, value|
+    macro "cf_#{key}".to_sym do |_, args|
+      @width = args[1].gsub(/\D/,'') if args[1]
+      @height = args[2].gsub(/\D/,'') if args[2]
+      @width ||= 400
+      @height ||= 300
+      @num ||= 0
+      @num = @num + 1
+
+      out = <<END
+<script type="text/javascript" src="#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}/plugin_assets/redmine_embedded_video/jwplayer.js"></script>
+<div id="video_#{@num}">Loading the player ...</div>
+<script type="text/javascript">
+    jwplayer("video_#{@num}").setup({
+      primary: 'flash',
+      type: 'rtmp',
+      streamer: 'rtmpt://#{value}.cloudfront.net/cfx/st',
+      file: "#{args[0]}",
+      height: #{@height},
+      width: #{@width}
+    });
+</script>
+END
+      out.html_safe
+    end
   end
 end
