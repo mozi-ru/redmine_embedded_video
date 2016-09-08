@@ -27,7 +27,9 @@ Redmine::WikiFormatting::Macros.register do
             file_url = args[0].gsub(/<.*?>/, '').gsub(/&lt;.*&gt;/,'')
         end
 out = <<END
+<div>
 <iframe width="#{@width}" height="#{@height}" src="#{file_url}" frameborder="0" allowfullscreen></iframe>
+</div>
 END
 
     out.html_safe
