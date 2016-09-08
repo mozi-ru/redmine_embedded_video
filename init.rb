@@ -27,15 +27,7 @@ Redmine::WikiFormatting::Macros.register do
             file_url = args[0].gsub(/<.*?>/, '').gsub(/&lt;.*&gt;/,'')
         end
 out = <<END
-<script type="text/javascript" src="#{request.protocol}#{request.host_with_port}#{ActionController::Base.relative_url_root}/plugin_assets/redmine_embedded_video/jwplayer.js"></script>
-<div id="video_#{@num}">Loading the player ...</div>
-<script type="text/javascript">
-    jwplayer("video_#{@num}").setup({
-        file: "#{file_url}",
-        height: #{@height},
-        width: #{@width} 
-    });
-</script>
+<iframe width="#{@width}" height="#{@height}" src="#{file_url}" frameborder="0" allowfullscreen></iframe>
 END
 
     out.html_safe
